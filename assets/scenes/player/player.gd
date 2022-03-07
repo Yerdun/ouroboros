@@ -1,18 +1,23 @@
 extends KinematicBody2D
 
 
-# Declare member variables here. Examples:
-# var a = 2
-# var b = "text"
-var movementSpeed = 12
-var maxSpeed = 320
-var jumpForce = 700
+# Movement and jump speeds
+export var movementSpeed = 12
+export var jumpSpeedInit = 900
 
-var gravity = 20
-var friction = 8
+# Natural forces
+export var gravity = 20
+export var friction = 8
 
-var velocity = Vector2.ZERO
-var canJump = true
+# Movement speed limits
+export var maxSpeedHor = 320
+export var shortHopSpeed = -300
+export var slowFallSpeed = 600
+export var terminalVelocity = 1200
+
+# Used for storing player data
+var playerVelocity = Vector2.ZERO
+var canJump = false
 
 
 # Called when the node enters the scene tree for the first time.
@@ -22,32 +27,46 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
+	# TODO: Split this logic into several functions for better readability
+	# Based somewhat off https://info.sonicretro.org/Category:Sonic_Physics_Guide
 	
 	# Move left and right at movementSpeed pixels/second
-	velocity.x += (Input.get_action_strength("moveRight") - Input.get_action_strength("moveLeft")) * movementSpeed
-#	# Make sure player doesn't go over movementSpeed
-	if abs(velocity.x) > abs(maxSpeed):
-		velocity.x = maxSpeed * sign(velocity.x)
+	playerVelocity.x += (Input.get_action_strength("moveRight") - Input.get_action_strength("moveLeft")) * movementSpeed
+	# Make sure player doesn't go over movementSpeed
+	if abs(playerVelocity.x) > abs(maxSpeedHor):
+		playerVelocity.x = maxSpeedHor * sign(playerVelocity.x)
 	
 	# Reset downward velocity to 0 if grounded
 	if is_on_floor():
-		velocity.y = 0
+		playerVelocity.y = 0
 		canJump = true
+	# Stop rising if hitting ceiling
+	elif is_on_ceiling():
+		playerVelocity.y = 100
 	# Otherwise move downward at gravity pixels/second
 	else:
-		velocity.y += gravity
+		playerVelocity.y += gravity
 	
-	# TODO: Implement vaguely similar jump mechanics to https://info.sonicretro.org/SPG:Jumping
-	# Thinking something more similar to Mario, where you can hold jump to fall slower, might need states for this
+	# Jumping
 	if Input.is_action_just_pressed("jump") and canJump:
-		velocity.y = -jumpForce
+		playerVelocity.y = -jumpSpeedInit
 		canJump = false
 	
-	# Apply friction if not actively moving: function copied from Sonic Retro's Classic Sonic physics breakdown
-	# TODO: Only apply this while on the ground, in midair there should be no resistance
-	if (Input.get_action_strength("moveRight") - Input.get_action_strength("moveLeft") == 0 and velocity.x != 0):
-		velocity.x -= min(abs(velocity.x), friction) * sign(velocity.x)
+	# Allow for variable jump height
+	if !is_on_floor() and !Input.is_action_pressed("jump") and playerVelocity.y < shortHopSpeed:
+		playerVelocity.y = shortHopSpeed
+		print(playerVelocity)
+	# If jump is held in midair, fall slowly
+	elif !is_on_floor() and Input.is_action_pressed("jump") and playerVelocity.y > slowFallSpeed:
+		playerVelocity.y = slowFallSpeed
+	# If falling faster than terminalVelocity, keep it there
+	elif playerVelocity.y > terminalVelocity:
+		playerVelocity.y = terminalVelocity
 	
-	move_and_slide(velocity, Vector2.UP)
-	print(velocity)
+	# Apply friction if not actively moving and on ground
+	if Input.get_action_strength("moveRight") - Input.get_action_strength("moveLeft") == 0 and playerVelocity.x != 0 and is_on_floor():
+		playerVelocity.x -= min(abs(playerVelocity.x), friction) * sign(playerVelocity.x)
+	
+	move_and_slide(playerVelocity, Vector2.UP)
+	print(playerVelocity)
 	
