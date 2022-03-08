@@ -15,12 +15,15 @@ position = Vector2( 627.82, 255.101 )
 [node name="GUI" type="Node" parent="."]
 
 [node name="DebugInfo" type="Label" parent="GUI"]
-margin_left = 808.0
+margin_left = 780.0
 margin_top = 3.0
-margin_right = 1021.0
+margin_right = 1023.0
 margin_bottom = 43.0
 text = "bottom text"
 script = ExtResource( 3 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="Environment" type="Node" parent="."]
 

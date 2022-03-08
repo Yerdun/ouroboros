@@ -1,10 +1,14 @@
 extends KinematicBody2D
 
 
-# Movement and jump speeds
+# TODO: Split variables into grouepd properties (see gdscript exports)
+# Character attributes
 export var movementSpeed = 24
-export var jumpSpeed = -1000
-# Deceleration forces
+export var jumpSpeed = 960
+export var turnaroundDecel = 60
+export var maxCoyoteTime = 0.1	# in seconds
+export var horMoveJumpBoost = 0.075	# multiplier for horizontal velocity added to jump speed
+# Acceleration forces
 export var gravity = 2400
 export var friction = 20
 # Movement speed limits
@@ -12,7 +16,6 @@ export var maxSpeedHor = 320
 export var shortHopSpeed = -300
 export var slowFallSpeed = 600
 export var terminalVelocity = 1200
-export var maxCoyoteTime = 0.1	# in seconds, presumably
 # Used for storing player data
 var velocity = Vector2.ZERO
 var canJump = false
@@ -35,27 +38,29 @@ func _process(delta):
 
 
 func _grabInput():
-	# TODO: Add the ability to buffer jumps to make maintaining momentum easier
+	# TODO: Add the ability to buffer jumps to make maintaining momentum easier (raycasting maybe?)
 	# Move left and right at movementSpeed pixels/second
 	velocity.x += (Input.get_action_strength("moveRight") - Input.get_action_strength("moveLeft")) * movementSpeed# * delta
 	# When jump is pressed, move upward at jumpSpeed pixels/second
 	if Input.is_action_just_pressed("jump") and canJump:
-		velocity.y = jumpSpeed
+		velocity.y = -jumpSpeed - abs(velocity.x) * horMoveJumpBoost
 		canJump = false
 
 
 func _movePlayer(delta):
 	# Falling
 	# Always accelerate downward at gravity pixels/second^2
-	velocity.y += gravity * delta	# TODO: Figure out why every 4 frames it does this while grounded
+	velocity.y += gravity * delta
 	
 	# Modify x movement
-	# Make sure player doesn't go over maxSpeedHor
 	# TODO: Allow a way to preserve momentum by jumping, like bunny hopping in Quake/CS
+	# Make sure player doesn't go over maxSpeedHor
 	if abs(velocity.x) > abs(maxSpeedHor):
 		velocity.x = maxSpeedHor * sign(velocity.x)
+	# When turning around, decelerate faster (turnaroundDecel)
+	if Input.get_action_strength("moveRight") - Input.get_action_strength("moveLeft") != 0 and sign(velocity.x) != Input.get_action_strength("moveRight") - Input.get_action_strength("moveLeft"):
+		velocity.x -= turnaroundDecel * sign(velocity.x)
 	# Apply friction if not actively moving and on ground
-	# TODO: Account for turnarounds, since right now it's faster to stop moving by letting go than moving in the other direction
 	if Input.get_action_strength("moveRight") - Input.get_action_strength("moveLeft") == 0 and velocity.x != 0 and is_on_floor():
 		velocity.x -= min(abs(velocity.x), friction) * sign(velocity.x)# * delta
 	
@@ -73,7 +78,7 @@ func _movePlayer(delta):
 
 
 func _checkGround(delta):
-	# NOTE: You can build up speed (up to maxSpeedHor) if you continually run into a wall. Debating on whether or not to add a check for this
+	# NOTE: You can build up speed (up to maxSpeedHor) if you continually run into a wall. Might add a check for this but not sure how
 	# If grounded, reset downward velocity, allow jump, and reset coyoteTimer
 	if is_on_floor():
 		velocity.y = 0
@@ -81,10 +86,10 @@ func _checkGround(delta):
 		coyoteTimer = 0
 	# Stop rising and bonk downward when hitting a ceiling
 	elif is_on_ceiling():
-		velocity.y = 100
+		velocity.y = 120
 	# If in midair, if longer than maxCoyoteTime, disable jump. Otherwise, add to coyoteTimer
 	elif !is_on_floor():
 		if coyoteTimer > maxCoyoteTime:
 			canJump = false
-		else:
+		elif canJump:
 			coyoteTimer += delta
