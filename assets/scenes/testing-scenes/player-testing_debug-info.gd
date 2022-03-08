@@ -13,8 +13,10 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
+	# TODO: Figure out how to shorten the whole var2str thing
 	set_text(
-		"Speed: " + var2str(get_node("../../Player").velocity) +
+		"Position: " + var2str(get_node("../../Player").position) +
+		"\nSpeed: " + var2str(get_node("../../Player").velocity) +
 		"\ncanJump: " + var2str(get_node("../../Player").canJump) +
 		"\ncoyoteTimer: " + var2str(get_node("../../Player").coyoteTimer) +
 		"\nX-Axis Inputs: " + var2str(Input.get_action_strength("moveLeft") - Input.get_action_strength("moveRight"))
