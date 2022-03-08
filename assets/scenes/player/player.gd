@@ -12,9 +12,11 @@ export var maxSpeedHor = 320
 export var shortHopSpeed = -300
 export var slowFallSpeed = 600
 export var terminalVelocity = 1200
+export var maxCoyoteTime = 0.1	# in seconds, presumably
 # Used for storing player data
 var velocity = Vector2.ZERO
 var canJump = false
+var coyoteTimer = 0
 
 
 # Called when the node enters the scene tree for the first time.
@@ -29,9 +31,7 @@ func _process(delta):
 	_grabInput()
 	_movePlayer(delta)
 	move_and_slide(velocity, Vector2.UP)	# Must be before ground checking
-	_checkGround()
-	
-	_debugInfo()	# Remove at some point
+	_checkGround(delta)
 
 
 func _grabInput():
@@ -72,20 +72,19 @@ func _movePlayer(delta):
 		velocity.y = terminalVelocity
 
 
-func _checkGround():
-	# TODO: Implement some sort of limited coyote time
+func _checkGround(delta):
 	# NOTE: You can build up speed (up to maxSpeedHor) if you continually run into a wall. Debating on whether or not to add a check for this
-	# If grounded, reset downward velocity and allow jump
+	# If grounded, reset downward velocity, allow jump, and reset coyoteTimer
 	if is_on_floor():
 		velocity.y = 0
 		canJump = true
+		coyoteTimer = 0
 	# Stop rising and bonk downward when hitting a ceiling
 	elif is_on_ceiling():
-		print("bonk")
 		velocity.y = 100
-
-
-func _debugInfo():
-	# TODO: Put this information in HUD instead of console
-	print(velocity)
-#	print("left movement: ", Input.get_action_strength("moveLeft"), " right movement: ", Input.get_action_strength("moveRight"))
+	# If in midair, if longer than maxCoyoteTime, disable jump. Otherwise, add to coyoteTimer
+	elif !is_on_floor():
+		if coyoteTimer > maxCoyoteTime:
+			canJump = false
+		else:
+			coyoteTimer += delta
