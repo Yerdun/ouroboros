@@ -6,45 +6,51 @@ extends KinematicBody2D
 export var movementSpeed = 24
 export var jumpSpeed = 960
 export var turnaroundDecel = 60
-export var maxCoyoteTime = 0.1	# in seconds
+export var maxCoyoteTime = 0.5	# in seconds
+export var maxJumpBuffer = 0.25	# in seconds
 export var horMoveJumpBoost = 0.075	# multiplier for horizontal velocity added to jump speed
+export var maxSpeedHorFloor = 320
+export var maxSpeedHorWall = 80
 # Acceleration forces
 export var gravity = 2400
 export var friction = 20
 # Movement speed limits
-export var maxSpeedHor = 320
 export var shortHopSpeed = -300
 export var slowFallSpeed = 600
 export var terminalVelocity = 1200
+var maxSpeedHor = maxSpeedHorFloor
 # Used for storing player data
 var velocity = Vector2.ZERO
 var canJump = false
 var coyoteTimer = 0
+var isJumpBuffered = false
+var jumpBufferTimer = 0
 
 
 # Called when the node enters the scene tree for the first time.
 #func _ready():
-#	pass	# Replace with function body.
+#	pass
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	# Based somewhat off https://info.sonicretro.org/Category:Sonic_Physics_Guide
-	
-	_grabInput()
+	_grabInput(delta)
 	_movePlayer(delta)
 	move_and_slide(velocity, Vector2.UP)	# Must be before ground checking
 	_checkGround(delta)
 
 
-func _grabInput():
-	# TODO: Add the ability to buffer jumps to make maintaining momentum easier (raycasting maybe?)
+func _grabInput(delta):
+	# TODO: Make this just for grabbing input, and manipulate position in movePlayer
 	# Move left and right at movementSpeed pixels/second
 	velocity.x += (Input.get_action_strength("moveRight") - Input.get_action_strength("moveLeft")) * movementSpeed# * delta
 	# When jump is pressed, move upward at jumpSpeed pixels/second
-	if Input.is_action_just_pressed("jump") and canJump:
-		velocity.y = -jumpSpeed - abs(velocity.x) * horMoveJumpBoost
-		canJump = false
+	# TODO: Make jumping its own function (or handled in _movePlayer), keep in mind it's also used by floor checking
+	if Input.is_action_just_pressed("jump"):
+		if canJump:
+			velocity.y = -jumpSpeed - abs(velocity.x) * horMoveJumpBoost
+			canJump = false
 
 
 func _movePlayer(delta):
@@ -54,6 +60,7 @@ func _movePlayer(delta):
 	
 	# Modify x movement
 	# TODO: Allow a way to preserve momentum by jumping, like bunny hopping in Quake/CS
+	# TODO: Make x positional accelerations dependent on delta
 	# Make sure player doesn't go over maxSpeedHor
 	if abs(velocity.x) > abs(maxSpeedHor):
 		velocity.x = maxSpeedHor * sign(velocity.x)
@@ -63,7 +70,6 @@ func _movePlayer(delta):
 	# Apply friction if not actively moving and on ground
 	if Input.get_action_strength("moveRight") - Input.get_action_strength("moveLeft") == 0 and velocity.x != 0 and is_on_floor():
 		velocity.x -= min(abs(velocity.x), friction) * sign(velocity.x)# * delta
-	
 	# Modify y movement
 	# Allow for variable jump height
 	if !is_on_floor() and !Input.is_action_pressed("jump") and velocity.y < shortHopSpeed:
@@ -78,18 +84,40 @@ func _movePlayer(delta):
 
 
 func _checkGround(delta):
-	# NOTE: You can build up speed (up to maxSpeedHor) if you continually run into a wall. Might add a check for this but not sure how
-	# If grounded, reset downward velocity, allow jump, and reset coyoteTimer
+	# If grounded
 	if is_on_floor():
-		velocity.y = 0
-		canJump = true
-		coyoteTimer = 0
+		# Jump if buffered and under jump buffer timeframe
+		if isJumpBuffered and jumpBufferTimer < maxJumpBuffer:
+			velocity.y = -jumpSpeed - abs(velocity.x) * horMoveJumpBoost
+			canJump = false
+			isJumpBuffered = false
+		# Otherwise, stop moving downward and reset jump-related variables
+		else:
+			velocity.y = 0
+			canJump = true
+			coyoteTimer = 0
+			jumpBufferTimer = 0
+			isJumpBuffered = false
 	# Stop rising and bonk downward when hitting a ceiling
 	elif is_on_ceiling():
 		velocity.y = 120
-	# If in midair, if longer than maxCoyoteTime, disable jump. Otherwise, add to coyoteTimer
+	# If in midair
 	elif !is_on_floor():
+		# Disable jumping when over coyote time
 		if coyoteTimer > maxCoyoteTime:
 			canJump = false
+		# Add to coyote timer if you can jump
 		elif canJump:
 			coyoteTimer += delta
+		# If jump is buffered, elapse jump buffer timer
+		if isJumpBuffered and jumpBufferTimer < maxJumpBuffer:
+			jumpBufferTimer += delta
+		# Buffer a jump when jump is pressed while falling (only allowed once per jump)
+		elif Input.is_action_just_pressed("jump") and velocity.y > 0 and !isJumpBuffered:
+			isJumpBuffered = true
+			
+	# Check for walls: change horizontal max speed depending on such
+	if is_on_wall():
+		maxSpeedHor = maxSpeedHorWall
+	elif !is_on_wall():
+		maxSpeedHor = maxSpeedHorFloor

@@ -19,5 +19,8 @@ func _process(delta):
 		"\nSpeed: " + var2str(get_node("../../Player").velocity) +
 		"\ncanJump: " + var2str(get_node("../../Player").canJump) +
 		"\ncoyoteTimer: " + var2str(get_node("../../Player").coyoteTimer) +
+		"\nisJumpBuffered: " + var2str(get_node("../../Player").isJumpBuffered) +
+		"\njumpBufferTimer: " + var2str(get_node("../../Player").jumpBufferTimer) +
+		"\nis_on_wall(): " + var2str(get_node("../../Player").is_on_wall()) +
 		"\nX-Axis Inputs: " + var2str(Input.get_action_strength("moveLeft") - Input.get_action_strength("moveRight"))
 		)
