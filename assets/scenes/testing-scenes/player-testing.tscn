@@ -56,7 +56,7 @@ texture = ExtResource( 1 )
 shape = SubResource( 1 )
 
 [node name="Platform2" type="StaticBody2D" parent="Environment"]
-position = Vector2( 187.5, 294.5 )
+position = Vector2( 187.5, 310.5 )
 scale = Vector2( 3, 1 )
 __meta__ = {
 "_edit_group_": true
@@ -109,6 +109,19 @@ modulate = Color( 1, 0, 0, 1 )
 texture = ExtResource( 1 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Platform5"]
+shape = SubResource( 1 )
+
+[node name="Platform6" type="StaticBody2D" parent="Environment"]
+position = Vector2( 126.5, 435 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="Sprite" type="Sprite" parent="Environment/Platform6"]
+modulate = Color( 1, 0, 0, 1 )
+texture = ExtResource( 1 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Platform6"]
 shape = SubResource( 1 )
 
 [node name="MakeshiftRuler" type="Node" parent="."]
