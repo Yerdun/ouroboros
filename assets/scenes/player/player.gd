@@ -41,10 +41,7 @@ func _process(delta):
 	_movePlayer(delta)
 	move_and_slide(velocity, Vector2.UP)	# Must be before ground checking
 	_checkGround(delta)
-	if Input.is_action_just_pressed("ui_accept"):
-		print("im shooting")
-		shoot()
-		$Node2D.look_at(get_global_mouse_position())
+	shoot(delta)
 	
 
 		
@@ -131,10 +128,14 @@ func _checkGround(delta):
 	elif !is_on_wall():
 		maxSpeedHor = maxSpeedHorFloor
 		
-func shoot():
-	var bullet = bulletPath.instance()
-	get_parent().add_child(bullet)
-	bullet.position = $Node2D/Position2D.global_position
+func shoot(delta):
+	if Input.is_action_just_pressed("ui_accept"):
+		var bullet = bulletPath.instance()
+		print("im shooting")
+		
+		#$Node2D.look_at(get_global_mouse_position())
+		add_child(bullet)
+		#bullet.position = $Node2D/Position2D.global_position
 
 	#TODO: shoot in direction player faces
-	bullet.velocity = get_global_mouse_position() - bullet.position
+		#bullet.velocity = get_global_mouse_position() - bullet.position
