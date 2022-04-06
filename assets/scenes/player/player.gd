@@ -131,12 +131,6 @@ func _checkGround(delta):
 func shoot(delta):
 	if Input.is_action_just_pressed("ui_accept"):
 		var bullet = bulletPath.instance()
-		print("im shooting")
-		
-		#$Node2D.look_at(get_global_mouse_position())
 		get_parent().add_child(bullet)
 		bullet.global_position = $Position2D.global_position
-		#bullet.position = $Node2D/Position2D.global_position
-
-	#TODO: shoot in direction player faces
-		#bullet.velocity = get_global_mouse_position() - bullet.position
+	
