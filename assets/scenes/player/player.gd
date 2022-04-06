@@ -134,7 +134,8 @@ func shoot(delta):
 		print("im shooting")
 		
 		#$Node2D.look_at(get_global_mouse_position())
-		add_child(bullet)
+		get_parent().add_child(bullet)
+		bullet.global_position = $Position2D.global_position
 		#bullet.position = $Node2D/Position2D.global_position
 
 	#TODO: shoot in direction player faces
