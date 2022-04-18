@@ -11,6 +11,10 @@ extents = Vector2( 32, 32 )
 
 [node name="Player" parent="." instance=ExtResource( 2 )]
 position = Vector2( 627.82, 255.101 )
+position = Vector2( 618, 232 )
+
+[node name="Camera2D" type="Camera2D" parent="Player"]
+current = true
 
 [node name="GUI" type="Node" parent="."]
 
