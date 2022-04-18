@@ -16,7 +16,7 @@ position = Vector2( 618, 232 )
 [node name="Camera2D" type="Camera2D" parent="Player"]
 current = true
 
-[node name="GUI" type="Node" parent="."]
+[node name="GUI" type="CanvasLayer" parent="."]
 
 [node name="DebugInfo" type="Label" parent="GUI"]
 margin_left = 780.0
