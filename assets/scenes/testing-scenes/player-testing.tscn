@@ -10,6 +10,7 @@ extents = Vector2( 32, 32 )
 [node name="PlayerTesting" type="Node"]
 
 [node name="Player" parent="." instance=ExtResource( 2 )]
+position = Vector2( 627.82, 255.101 )
 position = Vector2( 618, 232 )
 
 [node name="Camera2D" type="Camera2D" parent="Player"]
@@ -24,6 +25,9 @@ margin_right = 1023.0
 margin_bottom = 43.0
 text = "bottom text"
 script = ExtResource( 3 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="Environment" type="Node" parent="."]
 

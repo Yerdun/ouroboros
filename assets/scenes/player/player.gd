@@ -25,6 +25,7 @@ var canJump = false
 var coyoteTimer = 0
 var isJumpBuffered = false
 var jumpBufferTimer = 0
+const bulletPath = preload("res://assets/scenes/player/bullet.tscn")
 
 
 # Called when the node enters the scene tree for the first time.
@@ -39,6 +40,7 @@ func _process(delta):
 	_movePlayer(delta)
 	move_and_slide(velocity, Vector2.UP)	# Must be before ground checking
 	_checkGround(delta)
+	shoot(delta)
 
 
 func _grabInput(delta):
@@ -121,3 +123,11 @@ func _checkGround(delta):
 		maxSpeedHor = maxSpeedHorWall
 	elif !is_on_wall():
 		maxSpeedHor = maxSpeedHorFloor
+
+		
+func shoot(delta):
+	if Input.is_action_just_pressed("ui_accept"):
+		var bullet = bulletPath.instance()
+		get_parent().add_child(bullet)
+		bullet.global_position = $Position2D.global_position
+
