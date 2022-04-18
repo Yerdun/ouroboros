@@ -126,7 +126,7 @@ func _checkGround(delta):
 
 		
 func shoot(delta):
-	if Input.is_action_just_pressed("ui_accept"):
+	if Input.is_action_just_pressed("shoot"):
 		var bullet = bulletPath.instance()
 		get_parent().add_child(bullet)
 		bullet.global_position = $Position2D.global_position

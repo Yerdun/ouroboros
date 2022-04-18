@@ -1,4 +1,4 @@
-extends RigidBody2D
+extends KinematicBody2D
 
 
 # Variables here
@@ -21,4 +21,10 @@ func _process(delta):
 func _tryDying():
 	if currentHP <= 0:
 		queue_free()
+
+
+# Function that handles taking damage, planned to be called by a bullet that collides with this enemy
+func takeDamage():
+	currentHP -= 1
+
 

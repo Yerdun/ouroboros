@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/enemyPlaceholder.png-f1d536bf4a1bc9d776e5121cd41742f3.stex"
+path="res://.import/enemy-placeholder.png-14e2ce31e1ec653543cdd5bf03cee390.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/scenes/enemy/Basic Enemy/enemyPlaceholder.png"
-dest_files=[ "res://.import/enemyPlaceholder.png-f1d536bf4a1bc9d776e5121cd41742f3.stex" ]
+source_file="res://assets/scenes/enemy/basic-enemy/enemy-placeholder.png"
+dest_files=[ "res://.import/enemy-placeholder.png-14e2ce31e1ec653543cdd5bf03cee390.stex" ]
 
 [params]
 
