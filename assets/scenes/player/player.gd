@@ -29,9 +29,7 @@ const bulletPath = preload("res://assets/scenes/player/bullet.tscn")
 #<<<<<<< HEAD
 var directio = Vector2.RIGHT
 var initial 
-#=======
 
-#>>>>>>> 1a3d8acaffe3293ce6150885dbe5d5abe2a83a0c
 
 # Called when the node enters the scene tree for the first time.
 #func _ready():
@@ -46,11 +44,7 @@ func _process(delta):
 	move_and_slide(velocity, Vector2.UP)	# Must be before ground checking
 	_checkGround(delta)
 	shoot(delta)
-#<<<<<<< HEAD
-	
-#=======
 
-#>>>>>>> 1a3d8acaffe3293ce6150885dbe5d5abe2a83a0c
 
 func _grabInput(delta):
 	# TODO: Make this just for grabbing input, and manipulate position in movePlayer
@@ -141,9 +135,4 @@ func shoot(delta):
 		var bullet = bulletPath.instance()
 		get_parent().add_child(bullet)
 		bullet.global_position = $Position2D.global_position
-#<<<<<<< HEAD
-		
-	
-#=======
 
-#>>>>>>> 1a3d8acaffe3293ce6150885dbe5d5abe2a83a0c
