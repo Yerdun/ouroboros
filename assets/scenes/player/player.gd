@@ -26,8 +26,8 @@ var coyoteTimer = 0
 var isJumpBuffered = false
 var jumpBufferTimer = 0
 const bulletPath = preload("res://assets/scenes/player/bullet.tscn")
-
-
+var directio = Vector2.RIGHT
+var initial 
 
 # Called when the node enters the scene tree for the first time.
 #func _ready():
@@ -44,13 +44,12 @@ func _process(delta):
 	shoot(delta)
 	
 
-		
-
-
 func _grabInput(delta):
 	# TODO: Make this just for grabbing input, and manipulate position in movePlayer
 	# Move left and right at movementSpeed pixels/second
+	initial = velocity.x
 	velocity.x += (Input.get_action_strength("moveRight") - Input.get_action_strength("moveLeft")) * movementSpeed# * delta
+	
 	# When jump is pressed, move upward at jumpSpeed pixels/second
 	# TODO: Make jumping its own function (or handled in _movePlayer), keep in mind it's also used by floor checking
 	if Input.is_action_just_pressed("jump"):
@@ -133,4 +132,5 @@ func shoot(delta):
 		var bullet = bulletPath.instance()
 		get_parent().add_child(bullet)
 		bullet.global_position = $Position2D.global_position
+		
 	
