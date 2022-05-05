@@ -44,6 +44,7 @@ func _process(delta):
 	move_and_slide(velocity, Vector2.UP)	# Must be before ground checking
 	_checkGround(delta)
 	shoot(delta)
+	_animationHandler()
 
 
 func _grabInput(delta):
@@ -128,7 +129,6 @@ func _checkGround(delta):
 		maxSpeedHor = maxSpeedHorWall
 	elif !is_on_wall():
 		maxSpeedHor = maxSpeedHorFloor
-
 		
 func shoot(delta):
 	if Input.is_action_just_pressed("ui_accept"):
@@ -141,10 +141,9 @@ func _animationHandler():
 	else:
 		$AnimatedSprite.play()
 	if abs(velocity.x) > abs(velocity.y):
-		if velocity.x < 0:
-			$AnimatedSprite.animation = "walk left"
+		if velocity.x > 0:
+			$AnimatedSprite.animation = "snekWalkRight"
 		else:
-			$AnimatedSprite.animation = "walk right"
-	
+			$AnimatedSprite.animation = "snekWalkLeft"
 
 
