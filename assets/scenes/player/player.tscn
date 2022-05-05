@@ -48,7 +48,7 @@ animations = [ {
 } ]
 
 [sub_resource type="RectangleShape2D" id=1]
-extents = Vector2( 63.5, 15 )
+extents = Vector2( 63.5, 18 )
 
 [node name="Player" type="KinematicBody2D"]
 script = ExtResource( 2 )
@@ -58,10 +58,11 @@ position = Vector2( -3, -8 )
 scale = Vector2( 0.440972, 0.359375 )
 frames = SubResource( 5 )
 animation = "snekWalkRight"
+frame = 2
 playing = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2( -5.5, -13 )
+position = Vector2( -5.5, -10 )
 shape = SubResource( 1 )
 
 [node name="Position2D" type="Position2D" parent="."]
