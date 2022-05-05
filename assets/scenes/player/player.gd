@@ -145,5 +145,10 @@ func _animationHandler():
 			$AnimatedSprite.animation = "snekWalkRight"
 		else:
 			$AnimatedSprite.animation = "snekWalkLeft"
+			
+func _livesCounter():
+	
+func hit():
+	#if bullet area 2d contacts then decrease life counter
 
 

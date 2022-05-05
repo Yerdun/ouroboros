@@ -8,7 +8,9 @@ extents = Vector2( 16, 1 )
 
 [node name="Node2D" type="Node2D"]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="Area2D" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
 shape = SubResource( 1 )
 
 [node name="KinematicBody2D" type="KinematicBody2D" parent="."]
