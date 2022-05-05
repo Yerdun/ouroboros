@@ -135,4 +135,16 @@ func shoot(delta):
 		var bullet = bulletPath.instance()
 		get_parent().add_child(bullet)
 		bullet.global_position = $Position2D.global_position
+func _animationHandler(): 
+	if velocity == Vector2.ZERO:
+		$AnimatedSprite.stop()
+	else:
+		$AnimatedSprite.play()
+	if abs(velocity.x) > abs(velocity.y):
+		if velocity.x < 0:
+			$AnimatedSprite.animation = "walk left"
+		else:
+			$AnimatedSprite.animation = "walk right"
+	
+
 
