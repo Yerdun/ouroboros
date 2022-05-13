@@ -3,21 +3,21 @@ extends KinematicBody2D
 
 # TODO: Split variables into grouepd properties (see gdscript exports)
 # Character attributes
-export var movementSpeed = 24
-export var jumpSpeed = 960
-export var turnaroundDecel = 60
+export var movementSpeed = 27
+export var jumpSpeed = 1080
+export var turnaroundDecel = 65
 export var maxCoyoteTime = 0.5	# in seconds
 export var maxJumpBuffer = 0.25	# in seconds
 export var horMoveJumpBoost = 0.075	# multiplier for horizontal velocity added to jump speed
-export var maxSpeedHorFloor = 320
-export var maxSpeedHorWall = 80
+export var maxSpeedHorFloor = 360
+export var maxSpeedHorWall = 90
 # Acceleration forces
-export var gravity = 2400
-export var friction = 20
+export var gravity = 2700
+export var friction = 40
 # Movement speed limits
-export var shortHopSpeed = -300
-export var slowFallSpeed = 600
-export var terminalVelocity = 1200
+export var shortHopSpeed = -338
+export var slowFallSpeed = 675
+export var terminalVelocity = 1350
 var maxSpeedHor = maxSpeedHorFloor
 # Used for storing player data
 var velocity = Vector2.ZERO
@@ -26,6 +26,8 @@ var coyoteTimer = 0
 var isJumpBuffered = false
 var jumpBufferTimer = 0
 const bulletPath = preload("res://assets/scenes/player/bullet.tscn")
+
+export var boostSpeed = 80
 
 
 # Called when the node enters the scene tree for the first time.
@@ -47,12 +49,15 @@ func _grabInput(delta):
 	# TODO: Make this just for grabbing input, and manipulate position in movePlayer
 	# Move left and right at movementSpeed pixels/second
 	velocity.x += (Input.get_action_strength("moveRight") - Input.get_action_strength("moveLeft")) * movementSpeed# * delta
-	# When jump is pressed, move upward at jumpSpeed pixels/second
-	# TODO: Make jumping its own function (or handled in _movePlayer), keep in mind it's also used by floor checking
+	# When jump is pressed, jump
 	if Input.is_action_just_pressed("jump"):
-		if canJump:
-			velocity.y = -jumpSpeed - abs(velocity.x) * horMoveJumpBoost
-			canJump = false
+		_jump()
+	
+	# temporary boost function - must press while not holding a direction
+	# seems to only work in midair for some reason
+	if Input.is_action_just_pressed("boostTemporary"):
+		velocity.x += boostSpeed * sign(velocity.x)
+		print("BOOST")
 
 
 func _movePlayer(delta):
@@ -64,7 +69,7 @@ func _movePlayer(delta):
 	# TODO: Allow a way to preserve momentum by jumping, like bunny hopping in Quake/CS
 	# TODO: Make x positional accelerations dependent on delta
 	# Make sure player doesn't go over maxSpeedHor
-	if abs(velocity.x) > abs(maxSpeedHor):
+	if abs(velocity.x) > abs(maxSpeedHor) and Input.get_action_strength("moveRight") - Input.get_action_strength("moveLeft") != 0:
 		velocity.x = maxSpeedHor * sign(velocity.x)
 	# When turning around, decelerate faster (turnaroundDecel)
 	if Input.get_action_strength("moveRight") - Input.get_action_strength("moveLeft") != 0 and sign(velocity.x) != Input.get_action_strength("moveRight") - Input.get_action_strength("moveLeft"):
@@ -83,6 +88,14 @@ func _movePlayer(delta):
 	# Don't allow player to fall faster than terminal velocity
 	elif velocity.y > terminalVelocity:
 		velocity.y = terminalVelocity
+
+
+# Move upward at jumpSpeed pixels/second, multiplying by a little boost depending on your speed
+# Keep here or put in _movePlayer?
+func _jump():
+	if canJump:
+		velocity.y = -jumpSpeed - abs(velocity.x) * horMoveJumpBoost
+		canJump = false
 
 
 func _checkGround(delta):
@@ -124,10 +137,9 @@ func _checkGround(delta):
 	elif !is_on_wall():
 		maxSpeedHor = maxSpeedHorFloor
 
-		
+
 func shoot(delta):
 	if Input.is_action_just_pressed("shoot"):
 		var bullet = bulletPath.instance()
 		get_parent().add_child(bullet)
 		bullet.global_position = $Position2D.global_position
-

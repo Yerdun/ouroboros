@@ -1,0 +1,14 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://assets/scenes/player/debug-info.gd" type="Script" id=1]
+
+[node name="DebugInfo" type="Label"]
+margin_left = 780.0
+margin_top = 3.0
+margin_right = 1023.0
+margin_bottom = 43.0
+text = "bottom text"
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
