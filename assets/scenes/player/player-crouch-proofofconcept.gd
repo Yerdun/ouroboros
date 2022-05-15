@@ -12,8 +12,10 @@ export var horMoveJumpBoost = 0.075	# multiplier for horizontal velocity added t
 export var maxSpeedHorFloor = 360
 export var maxSpeedHorWall = 90
 # Acceleration forces
-export var gravity = 2700
-export var friction = 72
+export var baseGravity = 2700
+export var baseFriction = 72
+var gravity = baseGravity
+var friction = baseFriction
 # Movement speed limits
 export var shortHopSpeed = -350
 export var slowFallSpeed = 675
@@ -55,7 +57,7 @@ func _grabInput(delta):
 	
 	# temporary boost function - must press while not holding a direction
 	# seems to only work in midair for some reason
-	if Input.is_action_just_pressed("boostTemporary") and canBoost:
+	if Input.is_action_just_pressed"boostTemporary") and canBoost:
 		_boost()
 
 

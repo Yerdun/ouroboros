@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/Metal_tile.png-18607167a028f74bf724b5bd195e75e5.stex"
+path="res://.import/Metal_tile.png-cab5ad916568f4698f7e7f5fe1a4dddc.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Metal_tile.png"
-dest_files=[ "res://.import/Metal_tile.png-18607167a028f74bf724b5bd195e75e5.stex" ]
+source_file="res://assets/graphics/Metal_tile.png"
+dest_files=[ "res://.import/Metal_tile.png-cab5ad916568f4698f7e7f5fe1a4dddc.stex" ]
 
 [params]
 
@@ -28,7 +28,6 @@ process/fix_alpha_border=true
 process/premult_alpha=false
 process/HDR_as_SRGB=false
 process/invert_color=false
-process/normal_map_invert_y=false
 stream=false
 size_limit=0
 detect_3d=true

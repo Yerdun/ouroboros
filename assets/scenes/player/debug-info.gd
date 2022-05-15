@@ -22,5 +22,9 @@ func _process(delta):
 		"\nisJumpBuffered: " + var2str(get_node("../../Player").isJumpBuffered) +
 		"\njumpBufferTimer: " + var2str(get_node("../../Player").jumpBufferTimer) +
 		"\nis_on_wall(): " + var2str(get_node("../../Player").is_on_wall()) +
-		"\nX-Axis Inputs: " + var2str(Input.get_action_strength("moveLeft") - Input.get_action_strength("moveRight"))
+		"\nX-Axis Inputs: " + var2str(Input.get_action_strength("moveLeft") - Input.get_action_strength("moveRight")) +
+		"\ncanBoost: " + var2str(get_node("../../Player").canBoost) +
+		"\nglobal mouse position: " + var2str(get_global_mouse_position()) +
+		"\nmouse angle (rad): " + var2str(get_node("../../Player").get_angle_to(get_global_mouse_position())) +	# could be incorrect
+		"\nboost value: " + var2str(Vector2(get_node("../../Player").boostSpeed, 0).rotated(get_node("../../Player").get_angle_to(get_node("../../Player").get_global_mouse_position())))
 		)

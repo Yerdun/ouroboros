@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=2]
 
-[ext_resource path="res://Metal_tile.png" type="Texture" id=1]
+[ext_resource path="res://assets/graphics/Metal_tile.png" type="Texture" id=1]
 
 [sub_resource type="ConvexPolygonShape2D" id=4]
 points = PoolVector2Array( 72, 72, 0.0940971, 72, 0.0940971, 0, 72, 0 )
