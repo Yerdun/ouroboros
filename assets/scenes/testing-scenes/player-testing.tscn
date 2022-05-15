@@ -62,7 +62,7 @@ points = PoolVector2Array( 72, 72, 0.0940971, 72, 0.0940971, 0, 72, 0 )
 
 [node name="Player" parent="." instance=ExtResource( 2 )]
 position = Vector2( 618, 232 )
-turnaroundDecel = 144
+boostSpeed = 360
 
 [node name="Camera2D" type="Camera2D" parent="Player"]
 current = true

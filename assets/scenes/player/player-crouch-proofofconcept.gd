@@ -30,6 +30,8 @@ var jumpBufferTimer = 0
 const bulletPath = preload("res://assets/scenes/player/bullet.tscn")
 export var boostSpeed = 288
 var canBoost = true
+var isCrouching = false
+var crouchFriction = 18
 
 
 # Called when the node enters the scene tree for the first time.
@@ -57,22 +59,28 @@ func _grabInput(delta):
 	
 	# temporary boost function - must press while not holding a direction
 	# seems to only work in midair for some reason
-	if Input.is_action_just_pressed"boostTemporary") and canBoost:
-		_boost()
+	if Input.is_action_pressed("boostTemporary"):
+		isCrouching = true
+	else:
+		isCrouching = false
 
 
 # Move upward at jumpSpeed pixels/second, multiplying by a little boost depending on your speed
 # Keep here or put in _movePlayer?
 func _jump():
 	if canJump:
+		if isCrouching:
+				velocity += Vector2(boostSpeed, 0).rotated(get_angle_to(get_global_mouse_position()))
+				$BoostSound.play()
+				canBoost = false
 		velocity.y = -jumpSpeed - abs(velocity.x) * horMoveJumpBoost
 		canJump = false
 
 
-func _boost():
-	velocity += Vector2(boostSpeed, 0).rotated(get_angle_to(get_global_mouse_position()))
-	$BoostSound.play()
-	canBoost = false
+#func _boost():
+#	velocity += Vector2(boostSpeed, 0).rotated(get_angle_to(get_global_mouse_position()))
+#	$BoostSound.play()
+#	canBoost = false
 
 
 func _movePlayer(delta):
@@ -90,6 +98,10 @@ func _movePlayer(delta):
 		velocity.x -= turnaroundDecel * sign(velocity.x)
 	# Apply friction if not actively moving and on ground
 	if Input.get_action_strength("moveRight") - Input.get_action_strength("moveLeft") == 0 and velocity.x != 0 and is_on_floor():
+		if isCrouching:
+			friction = crouchFriction
+		elif !isCrouching:
+			friction = baseFriction
 		velocity.x -= min(abs(velocity.x), friction) * sign(velocity.x)# * delta
 	# Modify y movement
 	# Allow for variable jump height
